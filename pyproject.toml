@@ -1,0 +1,58 @@
+[tool.ruff]
+line-length = 80
+indent-width = 4
+exclude = ["__pycache__", "dist", ".git", "migrations"]
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+
+[tool.poetry]
+name = "anicosmicbackend"
+version = "0.1.0"
+description = ""
+authors = ["NaughtyZombR <naughtyzombr@yandex.ru>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "3.12.*"
+fastapi = "^0.116.2"
+uvicorn = "^0.35.0"
+gunicorn = "^23.0.0"
+sqlalchemy = "^2.0.43"
+asyncpg = "^0.30.0"
+alembic = "^1.16.5"
+tzdata = "^2025.2"
+alembic-postgresql-enum = "^1.8.0"
+pydantic-settings = "^2.10.1"
+pwdlib = {extras = ["argon2"], version = "^0.2.1"}
+pyjwt = "^2.10.1"
+pydantic = {extras = ["email"], version = "^2.11.9"}
+#polyfactory = "^2.22.2"
+python-multipart = "^0.0.20"
+aioboto3 = "^15.1.0"
+httpx = "^0.28.1"
+greenlet = "^3.2.4"
+filetype = "^1.2.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.3.0"
+ruff = "^0.13.0"
+mypy = "^1.18.1"
+pytest = "^8.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

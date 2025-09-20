@@ -1,0 +1,40 @@
+name: anicosmic-backend
+services:
+  api:
+    container_name: api
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: db
+    image: postgres:16.2
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGPORT: ${DB_PORT}
+      PGTZ: UTC
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${DB_USER} -d ${DB_NAME}'" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
