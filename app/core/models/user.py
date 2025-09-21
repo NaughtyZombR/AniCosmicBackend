@@ -6,12 +6,8 @@ from core.models.base import TimestampMixin
 from sqlalchemy import UUID, Boolean, Enum, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-
 if TYPE_CHECKING:
-    from core.models import (
-        Comment,
-        Post
-    )
+    from core.models import Comment, Post
 
 
 class User(TimestampMixin):

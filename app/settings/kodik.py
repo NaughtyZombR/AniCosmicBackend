@@ -1,16 +1,11 @@
-from pydantic import Field, HttpUrl
-
 from core.schemas.base import NonEmptyString
+from pydantic import Field, HttpUrl
 from settings.base import CommonBaseSettings
 
 
 class KodikAPISettings(CommonBaseSettings):
-    host: HttpUrl = Field(
-        validation_alias="KODIK_API_HOST"
-    )
-    token: NonEmptyString = Field(
-        validation_alias="KODIK_API_TOKEN"
-    )
+    host: HttpUrl = "https://kodikapi.com/search"
+    token: NonEmptyString = Field(validation_alias="KODIK_API_TOKEN")
     translation_id: NonEmptyString = Field(
         validation_alias="KODIK_TRANSLATION_ID"
     )

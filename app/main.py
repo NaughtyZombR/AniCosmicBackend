@@ -37,6 +37,7 @@ app.add_middleware(
     ],
 )
 
+
 # TODO: не выводить все ошибки в ответе
 @app.exception_handler(Exception)
 async def exception_handler(_: Request, exc: Exception) -> JSONResponse:

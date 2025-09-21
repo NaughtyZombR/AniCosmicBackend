@@ -3,9 +3,8 @@ from typing import Annotated
 from uuid import UUID
 
 from core.schemas.base import BaseSchema, NonEmptyString, TimestampSchema
-from pydantic import Field, HttpUrl, PlainSerializer
-
 from core.schemas.comment import CommentReadFull
+from pydantic import Field, HttpUrl, PlainSerializer
 
 Title = Annotated[
     NonEmptyString,

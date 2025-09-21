@@ -46,5 +46,5 @@ class InvalidUserRoleException(ForbiddenException):
     def __init__(self, *required_roles: UserRoles) -> None:
         super().__init__(
             detail=f"User must have one of the following roles: "
-            f"{", ".join(required_roles)}",
+            f"{', '.join(required_roles)}",
         )

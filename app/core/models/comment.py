@@ -7,10 +7,8 @@ from sqlalchemy import UUID, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from core.models import (
-        Post,
-        User
-    )
+    from core.models import Post, User
+
 
 class Comment(TimestampMixin):
     id: Mapped[uuid.UUID] = mapped_column(
@@ -36,4 +34,3 @@ class Comment(TimestampMixin):
     )
 
     post: Mapped["Post"] = relationship(back_populates="comments")
-

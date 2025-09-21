@@ -1,10 +1,7 @@
 import logging
-from httpx import AsyncClient, HTTPStatusError
 
-from api.exceptions.llm import (
-    LLMBadResponseException,
-    LLMModelNotFoundException,
-)
+from api.exceptions.external_api import KodikBadResponseException
+from httpx import AsyncClient, HTTPStatusError
 from settings.kodik import KodikAPISettings
 
 logger = logging.getLogger(__name__)
@@ -46,11 +43,8 @@ class KodikGateway:
         try:
             response.raise_for_status()
         except HTTPStatusError as e:
-            status_class = response.status_code // 100
-            if status_class == 4:
-                raise LLMModelNotFoundException() from e
-            else:
-                raise LLMBadResponseException() from e
+            # status_class = response.status_code // 100
+            raise KodikBadResponseException() from e
 
         return response.json()
 
@@ -72,10 +66,7 @@ class KodikGateway:
         try:
             response.raise_for_status()
         except HTTPStatusError as e:
-            status_class = response.status_code // 100
-            if status_class == 4:
-                raise LLMModelNotFoundException() from e
-            else:
-                raise LLMBadResponseException() from e
+            # status_class = response.status_code // 100
+            raise KodikBadResponseException() from e
 
         return response.json()

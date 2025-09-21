@@ -30,12 +30,11 @@ class PostService(ModelService[Post, None, PostUpdate]):
         )
         return post
 
-    async def get_all_posts_preview(
-        self
-    ) -> list[Post]:
+    async def get_all_posts_preview(self) -> list[Post]:
         # ToDo: Возвращать кратко, не всё наполнение
         return await self._repository.get_posts_short()
-    #
+
+
     async def get_full_post(self, post_id: UUID) -> Post:
         post = await self._repository.get_post_by_id_full(post_id)
         if post is None:

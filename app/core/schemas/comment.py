@@ -12,11 +12,14 @@ Text = Annotated[
     ),
 ]
 
+
 class _BaseComment(BaseSchema):
     text: Text
 
+
 class UserCommentRead(_BaseComment):
     pass
+
 
 class CommentReadFull(UserCommentRead):
     author_id: UUID
