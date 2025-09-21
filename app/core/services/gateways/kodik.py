@@ -25,9 +25,7 @@ class KodikGateway:
         return self._client_instance
 
     async def search_by_title(self, title: str) -> dict:
-        """
-        Поиск аниме по названию с жёстким соответствием и своей озвучкой.
-        """
+        """Поиск аниме по названию с материалом и эпизодами"""
         async with self._client as client:
             response = await client.get(
                 "/search",
@@ -35,30 +33,33 @@ class KodikGateway:
                     "type": 5,
                     "title": title,
                     "strict": "true",
-                    "translation_id": 2700,
+                    "translation_id": self._translation_id,
+                    "with_material_data": "true",
+                    "with_episodes": "true",
                     "token": self._token,
                 },
             )
-
         try:
             response.raise_for_status()
         except HTTPStatusError as e:
-            # status_class = response.status_code // 100
             raise KodikBadResponseException() from e
-
         return response.json()
 
-    async def list_content(self) -> dict:
+    async def list_content(self, next_page: str | None = None) -> dict:
         """
-        Получение списка по озвучке.
-        https://kodikapi.com/list
+        Получение списка по озвучке с поддержкой пагинации.
+        Если передан next_page, делаем запрос именно к этой странице.
         """
+        url = "/list" if not next_page else next_page
+
         async with self._client as client:
             response = await client.get(
-                "/list",
+                url,
                 params={
                     "type": 5,
-                    "translation_id": 2700,
+                    "translation_id": self._translation_id,
+                    "with_material_data": "true",
+                    "with_episodes": "true",
                     "token": self._token,
                 },
             )
@@ -66,7 +67,6 @@ class KodikGateway:
         try:
             response.raise_for_status()
         except HTTPStatusError as e:
-            # status_class = response.status_code // 100
             raise KodikBadResponseException() from e
 
         return response.json()

@@ -7,7 +7,7 @@ from sqlalchemy import UUID, ForeignKey, String, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from core.models import Comment, User
+    from core.models import AnimeMaterial, Comment, User
 
 
 class Post(TimestampMixin):
@@ -17,20 +17,18 @@ class Post(TimestampMixin):
 
     title: Mapped[str] = mapped_column(String, nullable=False)
 
-    kodik_url: Mapped[str | None] = mapped_column(
-        String,
-        nullable=True,
-        default=None,
-    )
-
     author_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
-
     author: Mapped["User"] = relationship(back_populates="posts")
 
     comments: Mapped[list["Comment"]] = relationship(
+        back_populates="post", cascade="all, delete-orphan", lazy="joined"
+    )
+
+    material: Mapped[Optional["AnimeMaterial"]] = relationship(
+        "AnimeMaterial",
         back_populates="post",
+        uselist=False,
         cascade="all, delete-orphan",
-        lazy="joined",
     )

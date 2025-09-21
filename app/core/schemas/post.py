@@ -1,10 +1,9 @@
-from datetime import time
-from typing import Annotated
+from typing import Annotated, Optional
 from uuid import UUID
 
 from core.schemas.base import BaseSchema, NonEmptyString, TimestampSchema
 from core.schemas.comment import CommentReadFull
-from pydantic import Field, HttpUrl, PlainSerializer
+from pydantic import Field
 
 Title = Annotated[
     NonEmptyString,
@@ -12,16 +11,6 @@ Title = Annotated[
         description="Название поста",
         examples=["Новый пост"],
     ),
-]
-
-
-def url_to_unicode_str(value: HttpUrl) -> str:
-    return value.unicode_string()
-
-
-CustomUrl = Annotated[
-    HttpUrl,
-    PlainSerializer(lambda value: value.unicode_string()),
 ]
 
 
@@ -42,7 +31,7 @@ class PostReadFull(UserPostReadFull):
 
 
 class PostCreate(_BasePost):
-    kodik_url: CustomUrl | None
+    pass
 
 
 class PostUpdate(_BasePost):

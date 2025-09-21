@@ -18,6 +18,10 @@ class PostRepository(SQLAlchemyRepository[Post, None, PostUpdate]):
     def model(self) -> type[Post]:
         return Post
 
+    @staticmethod
+    def default_order_by() -> Sequence[ColumnElement]:
+        return [Post.created_at.desc()]
+
     async def get_posts_short(self) -> list[Post]:
         return await self.get_all(
             order_by=self.default_order_by(),
@@ -28,6 +32,9 @@ class PostRepository(SQLAlchemyRepository[Post, None, PostUpdate]):
             where=[Post.id == post_id],
         )
 
-    @staticmethod
-    def default_order_by() -> Sequence[ColumnElement]:
-        return [Post.created_at.desc()]
+    async def exists_by_title(self, title: str) -> bool:
+        """Проверяет, есть ли пост с указанным названием"""
+        result = await self.get_all(
+            where=[Post.title == title],
+        )
+        return result.scalar() is not None
