@@ -4,7 +4,7 @@ from settings.base import CommonBaseSettings
 
 
 class KodikAPISettings(CommonBaseSettings):
-    host: HttpUrl = "https://kodikapi.com/search"
+    host: HttpUrl = "https://kodikapi.com"
     token: NonEmptyString = Field(validation_alias="KODIK_API_TOKEN")
     translation_id: NonEmptyString = Field(
         validation_alias="KODIK_TRANSLATION_ID"

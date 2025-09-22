@@ -25,6 +25,10 @@ class AnimeMaterial(TimestampMixin):
     episodes_count: Mapped[Optional[int]] = mapped_column(
         Integer, nullable=True
     )
+    released_episodes_count: Mapped[Optional[int]] = mapped_column(
+        Integer, nullable=True
+    )
+    last_season: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     genres: Mapped[Optional[str]] = mapped_column(
         String, nullable=True
     )  # Через запятую

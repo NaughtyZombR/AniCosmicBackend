@@ -1,10 +1,11 @@
-from datetime import time
 from uuid import UUID
 
 from api.exceptions.post import PostNotFoundException
 from core.models import Post
-from core.schemas.post import PostCreate, PostUpdate
+from core.schemas.pagination import PaginationParams
+from core.schemas.post import PostCreate, PostFilters, PostUpdate
 from core.services.base import ModelService
+from core.services.repositories.pagination import ItemsPage
 from core.services.repositories.post import PostRepository
 
 
@@ -29,6 +30,27 @@ class PostService(ModelService[Post, None, PostUpdate]):
             )
         )
         return post
+
+    async def search_posts(
+        self,
+        filters: PostFilters,
+        pagination_params: PaginationParams,
+    ) -> ItemsPage[Post]:
+        where = self._repository.make_where_from_filters(filters)
+        offset, limit = pagination_params.to_offset_limit()
+
+        posts = await self._repository.get_all(
+            where=where,
+            order_by=[Post.created_at.desc()],
+            offset=offset,
+            limit=limit,
+        )
+        return ItemsPage(
+            items=posts,
+            page=pagination_params.page,
+            per_page=pagination_params.per_page,
+            total=await self._repository.count(where=where),
+        )
 
     async def get_all_posts_preview(self) -> list[Post]:
         # ToDo: Возвращать кратко, не всё наполнение

@@ -1,16 +1,22 @@
-from api.dependencies.post import ValidPostId
+from api.dependencies.pagination import PaginationQueryParams
+from api.dependencies.post import PostQueryFilters, ValidPostId
 from api.dependencies.services import (
+    AnimeMaterialServiceDep,
+    KodikServiceDep,
     PostServiceDep,
 )
-from api.dependencies.user import UserOrAdmin
+from api.dependencies.user import Admin, UserOrAdmin, UserQueryFilters
 from api.tags import APITags
 from core.models import Post
 from core.schemas.post import (
     PostCreate,
+    PostPaginationPageRead,
     PostReadFull,
     PostReadShort,
     PostUpdate,
 )
+from core.services.orchestrators.post_material import PostMaterialOrchestrator
+from core.services.repositories.pagination import ItemsPage
 from fastapi import APIRouter
 from starlette import status
 
@@ -18,13 +24,33 @@ router = APIRouter(tags=[APITags.Post])
 
 
 # region Post
-@router.get("/posts", response_model=list[PostReadShort])
+@router.get("/posts", response_model=PostPaginationPageRead)
 async def get_all_posts(
+    query_filters: PostQueryFilters,
+    pagination_params: PaginationQueryParams,
     post_service: PostServiceDep,
     _: UserOrAdmin,
-) -> list[Post]:
-    posts = await post_service.get_all_posts_preview()
+) -> ItemsPage[Post]:
+    posts = await post_service.search_posts(query_filters, pagination_params)
     return posts
+
+
+@router.post("/posts/kodik", response_model=PostReadShort)
+async def create_post_from_kodik(
+    schema: PostCreate,
+    admin: Admin,
+    post_service: PostServiceDep,
+    material_service: AnimeMaterialServiceDep,
+    kodik_service: KodikServiceDep,
+) -> PostReadFull:
+    """
+    Создаёт Post и AnimeMaterial по названию через Kodik
+    """
+    orchestrator = PostMaterialOrchestrator(
+        post_service, material_service, kodik_service
+    )
+    post, _ = await orchestrator.create_post_with_material(schema, admin.id)
+    return post
 
 
 @router.get("/posts/{post_id}", response_model=PostReadFull)
@@ -37,13 +63,13 @@ async def get_post(
     return post
 
 
-@router.post("/posts", response_model=PostReadFull)
+@router.post("/posts", response_model=PostReadShort)
 async def create_post(
     post_service: PostServiceDep,
     schema: PostCreate,
-    user: UserOrAdmin,
+    admin: Admin,
 ) -> Post:
-    post = await post_service.create_post(schema=schema, author_id=user.id)
+    post = await post_service.create_post(schema=schema, author_id=admin.id)
     await post_service.save_changes()
     return post
 
@@ -53,7 +79,7 @@ async def update_post(
     post: ValidPostId,
     schema: PostUpdate,
     post_service: PostServiceDep,
-    _: UserOrAdmin,
+    _: Admin,
 ) -> Post:
     updated_post = await post_service.update_by_id(post.id, schema)
     await post_service.save_changes()
@@ -67,7 +93,7 @@ async def update_post(
 async def delete_post(
     post: ValidPostId,
     post_service: PostServiceDep,
-    _: UserOrAdmin,
+    _: Admin,
 ) -> None:
     await post_service.delete_by_id(post.id)
     await post_service.save_changes()

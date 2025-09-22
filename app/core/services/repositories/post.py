@@ -3,7 +3,7 @@ from typing import override
 from uuid import UUID
 
 from core.models import Post
-from core.schemas.post import PostUpdate
+from core.schemas.post import PostFilters, PostUpdate
 from core.services.repositories.SQLAlchemy import SQLAlchemyRepository
 from sqlalchemy import ColumnElement
 
@@ -38,3 +38,12 @@ class PostRepository(SQLAlchemyRepository[Post, None, PostUpdate]):
             where=[Post.title == title],
         )
         return result.scalar() is not None
+
+    @staticmethod
+    def make_where_from_filters(
+        filters: PostFilters,
+    ) -> Sequence[ColumnElement[bool]]:
+        where = []
+        if filters.title is not None:
+            where.append(Post.title.ilike(f"%{filters.title}%"))
+        return where

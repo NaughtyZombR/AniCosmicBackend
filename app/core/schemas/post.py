@@ -1,8 +1,9 @@
-from typing import Annotated, Optional
+from typing import Annotated
 from uuid import UUID
 
+from core.schemas.anime_material import AnimeMaterialRead
 from core.schemas.base import BaseSchema, NonEmptyString, TimestampSchema
-from core.schemas.comment import CommentReadFull
+from core.schemas.pagination import PaginationPageRead
 from pydantic import Field
 
 Title = Annotated[
@@ -23,7 +24,7 @@ class PostReadShort(_BasePost, TimestampSchema):
 
 
 class UserPostReadFull(PostReadShort):
-    comments: list[CommentReadFull] | None
+    anime_material: AnimeMaterialRead | None
 
 
 class PostReadFull(UserPostReadFull):
@@ -36,3 +37,10 @@ class PostCreate(_BasePost):
 
 class PostUpdate(_BasePost):
     pass
+
+
+class PostFilters(BaseSchema):
+    title: NonEmptyString | None = None
+
+
+PostPaginationPageRead = PaginationPageRead[PostReadShort]

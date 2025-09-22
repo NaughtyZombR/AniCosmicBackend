@@ -3,7 +3,10 @@ from typing import Annotated
 
 from api.dependencies.services import PostServiceDep
 from core.models import Post
+from core.schemas.post import PostFilters
 from fastapi import Depends
+
+PostQueryFilters = Annotated[PostFilters, Depends(PostFilters)]
 
 
 async def get_existing_post(

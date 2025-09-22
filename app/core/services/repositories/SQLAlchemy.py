@@ -72,7 +72,7 @@ class SQLAlchemyRepository[
             .limit(limit)
         )
         result = await self._session.execute(stmt)
-        lazy_entities = result.scalars()
+        lazy_entities = result.scalars().unique()
         return lazy_entities.all()
 
     async def count(
