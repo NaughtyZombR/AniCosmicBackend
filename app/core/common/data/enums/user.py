@@ -1,5 +1,4 @@
 from enum import StrEnum, unique
-from typing import Self
 
 
 @unique

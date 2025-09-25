@@ -1,7 +1,7 @@
 import uuid
 from typing import TYPE_CHECKING
 
-from core.common.data.enums import UserRoles
+from core.common.data.enums.user import UserRoles
 from core.models.base import TimestampMixin
 from sqlalchemy import UUID, Boolean, Enum, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship

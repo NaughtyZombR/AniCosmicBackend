@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Sequence
+from collections.abc import Sequence
 
 from core.models.base import BaseModel
 from core.schemas.base import BaseSchema, DictStrAny

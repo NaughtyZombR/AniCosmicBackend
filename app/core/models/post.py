@@ -1,9 +1,8 @@
 import uuid
-from datetime import time
 from typing import TYPE_CHECKING, Optional
 
 from core.models.base import TimestampMixin
-from sqlalchemy import UUID, ForeignKey, String, Time
+from sqlalchemy import UUID, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
@@ -23,7 +22,7 @@ class Post(TimestampMixin):
     author: Mapped["User"] = relationship(back_populates="posts")
 
     comments: Mapped[list["Comment"]] = relationship(
-        back_populates="post", cascade="all, delete-orphan", lazy="joined"
+        back_populates="post", cascade="all, delete-orphan", lazy="selectin"
     )
 
     material: Mapped[Optional["AnimeMaterial"]] = relationship(
@@ -31,4 +30,5 @@ class Post(TimestampMixin):
         back_populates="post",
         uselist=False,
         cascade="all, delete-orphan",
+        lazy="joined",
     )

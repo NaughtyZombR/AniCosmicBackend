@@ -1,4 +1,4 @@
-from core.schemas.anime_material import AnimeMaterialCreate
+from core.schemas.external.kodik import KodikMaterialData
 from core.services.gateways.kodik import KodikGateway
 from settings.kodik import KodikAPISettings
 
@@ -7,29 +7,26 @@ class KodikService:
     def __init__(self, settings: KodikAPISettings) -> None:
         self._kodik_gateway = KodikGateway(settings)
 
-    async def get_anime_material_schema(
+    async def get_anime_material_data(
         self, title: str
-    ) -> AnimeMaterialCreate | None:
+    ) -> KodikMaterialData | None:
         """
         Получение материала по названию через Kodik API.
-        Возвращает Pydantic-схему AnimeMaterialCreate или None.
+        Возвращает Pydantic-схему KodikMaterialData или None.
         """
         data = await self._kodik_gateway.search_by_title(title)
         results = data.get("results", [])
         if not results:
             return None
 
-        if results and isinstance(results[0], dict):
-            material_json = results[0].get("material_data", {})
-        else:
-            material_json = {}
+        material_json = (
+            results[0].get("material_data", {})
+            if isinstance(results[0], dict)
+            else {}
+        )
 
         # Добавляем данные о выпущенных сериях, если есть
         if "last_episode" in results[0]:
-            material_json["released_episodes_count"] = results[0][
-                "last_episode"
-            ]
+            material_json["episodes_aired"] = results[0]["last_episode"]
 
-        # Pydantic сам забирает только нужные поля
-        material_schema = AnimeMaterialCreate.model_validate(material_json)
-        return material_schema
+        return KodikMaterialData.model_validate(material_json)

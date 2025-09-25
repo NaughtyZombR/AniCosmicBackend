@@ -1,7 +1,6 @@
 import uuid
 from typing import TYPE_CHECKING
 
-import sqlalchemy as sa
 from core.models.base import TimestampMixin
 from sqlalchemy import UUID, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship

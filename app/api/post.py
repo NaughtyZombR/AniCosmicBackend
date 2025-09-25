@@ -2,18 +2,19 @@ from api.dependencies.pagination import PaginationQueryParams
 from api.dependencies.post import PostQueryFilters, ValidPostId
 from api.dependencies.services import (
     AnimeMaterialServiceDep,
+    GenreServiceDep,
     KodikServiceDep,
     PostServiceDep,
 )
-from api.dependencies.user import Admin, UserOrAdmin, UserQueryFilters
+from api.dependencies.user import Admin, UserOrAdmin
 from api.tags import APITags
 from core.models import Post
 from core.schemas.post import (
     PostCreate,
     PostPaginationPageRead,
-    PostReadFull,
     PostReadShort,
     PostUpdate,
+    UserPostReadFull,
 )
 from core.services.orchestrators.post_material import PostMaterialOrchestrator
 from core.services.repositories.pagination import ItemsPage
@@ -25,7 +26,7 @@ router = APIRouter(tags=[APITags.Post])
 
 # region Post
 @router.get("/posts", response_model=PostPaginationPageRead)
-async def get_all_posts(
+async def get_posts(
     query_filters: PostQueryFilters,
     pagination_params: PaginationQueryParams,
     post_service: PostServiceDep,
@@ -42,24 +43,23 @@ async def create_post_from_kodik(
     post_service: PostServiceDep,
     material_service: AnimeMaterialServiceDep,
     kodik_service: KodikServiceDep,
-) -> PostReadFull:
+    genre_service: GenreServiceDep,
+) -> Post:
     """
     Создаёт Post и AnimeMaterial по названию через Kodik
     """
     orchestrator = PostMaterialOrchestrator(
-        post_service, material_service, kodik_service
+        post_service, material_service, kodik_service, genre_service
     )
     post, _ = await orchestrator.create_post_with_material(schema, admin.id)
     return post
 
 
-@router.get("/posts/{post_id}", response_model=PostReadFull)
+@router.get("/posts/{post_id}", response_model=UserPostReadFull)
 async def get_post(
     post: ValidPostId,
-    post_service: PostServiceDep,
     _: UserOrAdmin,
 ) -> Post:
-    post = await post_service.get_full_post(post.id)
     return post
 
 

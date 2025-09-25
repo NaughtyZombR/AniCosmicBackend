@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from settings.database import db_settings
 from sqlalchemy import MetaData

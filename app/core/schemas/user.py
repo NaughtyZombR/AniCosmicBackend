@@ -1,7 +1,7 @@
 from typing import Annotated, Self
 from uuid import UUID
 
-from core.common.data.enums import UserRoles
+from core.common.data.enums.user import UserRoles
 from core.schemas.base import BaseSchema, NonEmptyString
 from core.schemas.pagination import PaginationPageRead
 from pydantic import AwareDatetime, EmailStr, Field, model_validator

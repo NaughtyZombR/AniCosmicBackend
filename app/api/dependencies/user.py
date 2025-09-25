@@ -4,7 +4,7 @@ from uuid import UUID
 from api.dependencies.auth import ValidBearerAccessToken
 from api.dependencies.services import UserServiceDep
 from api.exceptions import user as user_exceptions
-from core.common.data.enums import UserRoles
+from core.common.data.enums.user import UserRoles
 from core.models import User
 from core.schemas.user import UserFilters
 from fastapi import Depends

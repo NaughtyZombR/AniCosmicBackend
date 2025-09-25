@@ -4,7 +4,7 @@ from api.exceptions.base import (
     NotFoundException,
     UnauthorizedException,
 )
-from core.common.data.enums import UserRoles
+from core.common.data.enums.user import UserRoles
 
 
 class UserInvalidPasswordException(UnauthorizedException):

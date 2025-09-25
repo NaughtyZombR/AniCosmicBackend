@@ -50,7 +50,7 @@ class KodikGateway:
         Получение списка по озвучке с поддержкой пагинации.
         Если передан next_page, делаем запрос именно к этой странице.
         """
-        url = "/list" if not next_page else next_page
+        url = next_page if next_page else "/list"
 
         async with self._client as client:
             response = await client.get(

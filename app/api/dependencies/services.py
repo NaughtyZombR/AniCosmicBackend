@@ -3,6 +3,7 @@ from typing import Annotated
 from core.services.anime_material import AnimeMaterialService
 from core.services.auth import AuthService
 from core.services.email import EmailService
+from core.services.genre import GenreService
 from core.services.kodik import KodikService
 from core.services.post import PostService
 from core.services.session import SessionService
@@ -40,6 +41,12 @@ async def get_anime_material_service(
     return AnimeMaterialService(session)
 
 
+async def get_genre_service(
+    session: AsyncSessionDep,
+) -> GenreService:
+    return GenreService(session)
+
+
 async def get_kodik_service() -> KodikService:
     return KodikService(kodik_settings)
 
@@ -63,5 +70,6 @@ AnimeMaterialServiceDep = Annotated[
     AnimeMaterialService, Depends(get_anime_material_service)
 ]
 KodikServiceDep = Annotated[KodikService, Depends(get_kodik_service)]
+GenreServiceDep = Annotated[GenreService, Depends(get_genre_service)]
 SessionServiceDep = Annotated[SessionService, Depends(get_session_service)]
 UserServiceDep = Annotated[UserService, Depends(get_user_service)]
